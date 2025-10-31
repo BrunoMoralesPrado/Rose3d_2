@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Para mi pequeña</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg1: #161b22;
+            --bg2: #0b0f14;
+            --card: #ffffff10;
+            --text: #ffffff;
+            --accent: #ff7db6;
+        }
+
+        html,
+        body {
+            height: 100%;
+            background: radial-gradient(1000px 700px at 50% 20%, var(--bg1), var(--bg2));
+            color: var(--text);
+            margin: 0;
+        }
+
+        /* Lienzo a 100% del viewport con ratio correcto */
+        .canvas-wrap {
+            position: relative;
+            width: 100%;
+            min-height: 60vh;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            border-radius: 1rem;
+            background: linear-gradient(180deg, #0f1320 0%, #0a0d14 100%);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            max-height: 70vh;
+            /* evita que crezca infinito en pantallas altas */
+        }
+
+        /* H1  */
+        h1 {
+            text-align: center;
+            font-family: 'Comic Sans MS', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+            margin: 24px auto 8px;
+            line-height: 1.2;
+            color: var(--text);
+            text-shadow: 0 2px 16px rgba(255, 125, 182, .25);
+            opacity: 0;
+            /* inicia oculto */
+            transform: translateY(8px);
+            /* leve desplazamiento inicial */
+        }
+
+        /* Keyframes */
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: translateY(12px) scale(.98);
+                filter: blur(3px);
+            }
+
+            60% {
+                opacity: 1;
+                transform: translateY(-2px) scale(1.01);
+                filter: blur(0);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Clase que activa la animación */
+        .reveal {
+            animation: popIn .9s ease-out forwards;
+        }
+
+        /* Tarjetita inferior  */
+        .note {
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            background: var(--card);
+            border: 1px solid #ffffff1a;
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: .95rem;
+            margin: 0 auto 24px;
+            color: #cfd8dc;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container py-4">
+        <div class="row justify-content-center g-3">
+            <div class="col-12 col-md-10 col-lg-8">
+                <div class="canvas-wrap ratio ratio-16x9">
+                    <canvas id="c"></canvas>
+                </div>
+            </div>
+            <div class="col-12">
+                <h1 id="title">Te amo demasiado mi niña hermosa ❤️</h1>
+            </div>
+            <div class="col-12 col-md-10 col-lg-8">
+                <p class="note text-center">
+                    Hecho con amor y un poquito de matemáticas ✨
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- Responsivo y HiDPI ---
+        const canvas = document.getElementById('c');
+        const ctx = canvas.getContext('2d', { alpha: true });
+        const dpr = Math.max(1, Math.min(3, window.devicePixelRatio || 1)); // limita DPR extremo
+
+        function resizeCanvas() {
+            // El canvas llenará su contenedor .ratio
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = Math.floor(rect.width * dpr);
+            canvas.height = Math.floor(rect.height * dpr);
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // normaliza coordenadas
+        }
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            // Al redimensionar, también limpiamos el z-buffer memo
+            m = {};
+        });
+
+        (function start() {
+            resizeCanvas();
+
+            // Variables globales
+            var b = document.body;
+            var c = canvas;
+            var a = ctx;
+            with (m = Math) C = cos, S = sin, P = pow, R = random;
+
+            // Ajustes de escala 
+            let f = 500; // factor base 
+            let h = -250;
+
+            function p(a, b, c) {
+                if (c > 60) return [S(a * 7) * (13 + 5 / (.2 + P(b * 4, 4))) - S(b) * 50, b * f + 50, 625 + C(a * 7) * (13 + 5 / (.2 + P(b * 4, 4))) + b * 400, a * 1 - b / 2, a];
+                A = a * 2 - 1; B = b * 2 - 1;
+                if (A * A + B * B < 1) {
+                    if (c > 37) {
+                        n = (j = c & 1) ? 6 : 4;
+                        o = .5 / (a + .01) + C(b * 125) * 3 - a * 300; w = b * h;
+                        return [o * C(n) + w * S(n) + j * 610 - 390, o * S(n) - w * C(n) + 550 - j * 350, 1180 + C(B + A) * 99 - j * 300, .4 - a * .1 + P(1 - B * B, -h * 6) * .15 - a * b * .4 + C(a + b) / 5 + P(C((o * (a + 1) + (B > 0 ? w : -w)) / 25), 30) * .1 * (1 - B * B), o / 1e3 + .7 - o * w * 3e-6]
+                    }
+                    if (c > 32) {
+                        c = c * 1.16 - .15; o = a * 45 - 20; w = b * b * h; z = o * S(c) + w * C(c) + 620;
+                        return [o * C(c) - w * S(c), 28 + C(B * .5) * 99 - b * b * b * 60 - z / 2 - h, z, (b * b * .3 + P((1 - (A * A)), 7) * .15 + .3) * b, b * .7]
+                    }
+                    o = A * (2 - b) * (80 - c * 2);
+                    w = 99 - C(A) * 120 - C(b) * (-h - c * 4.9) + C(P(1 - b, 7)) * 50 + c * 2;
+                    z = o * S(c) + w * C(c) + 700;
+                    return [o * C(c) - w * S(c), B * 99 - C(P(b, 7)) * 50 - c / 3 - z / 1.35 + 450, z, (1 - b / 1.2) * .9 + a * .1, P((1 - b), 20) / 4 + .05]
+                }
+            }
+
+            // Z-buffer en un Map para evitar colisiones tras resize
+            let zbuf = new Map();
+
+            // Lanzamos el dibujo continuo
+            let started = false;
+            const title = document.getElementById('title');
+
+            function tick() {
+                for (let i = 0; i < 1e4; i++) {
+                    const s = p(R(), R(), i % 46 / .74);
+                    if (!s) continue;
+
+                    const rect = canvas.getBoundingClientRect();
+                    const cx = rect.width / 2;
+                    const cy = rect.height / 2;
+                    const x = Math.round(s[0] * f / z + cx);
+                    const y = Math.round(s[1] * f / z + cy);
+                    // Bounds simples (en CSS px, no HiDPI)
+
+                  //if (x < 0 || y < 0 || x >= rect.width || y >= rect.height) continue;
+
+                    const key = y * rect.width + x;
+                    if (!zbuf.has(key) || zbuf.get(key) > z) {
+                        zbuf.set(key, z);
+                        ctx.fillStyle = "rgb(" + ~(s[3] * h) + "," + ~(s[4] * h) + "," + ~(s[3] * s[3] * -80) + ")";
+                        ctx.fillRect(x, y, 1, 1);
+                    }
+                }
+
+                // La primera vez que dibuja algo, mostramos el H1 con animación
+                if (!started) {
+                    started = true;
+                    requestAnimationFrame(() => title.classList.add('reveal'));
+                }
+                requestAnimationFrame(tick);
+            }
+
+            requestAnimationFrame(tick);
+        })();
+    </script>
+</body>
+
+</html>
